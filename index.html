@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspection Report</title>
+    <style>
+        /* Basic styling for better presentation */
+        body {
+            font-family: "Courier New", Courier, monospace;
+            font-weight: bold;
+            background-color: #f0f0f0; 
+            margin: 0;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border-radius: 10px;
+            border: 1px solid #000000;
+        }
+        .suggestions {
+            position: absolute;
+            width: 100%;
+            border: 1px solid #000000;
+            background-color: #ffffff;
+            border-radius: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 1;
+            display: none;
+        }
+        .suggestion-item {
+            padding: 8px;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background-color: #f0f0f0;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .form-group.half-width {
+            flex: 0 0 48%;
+        }
+        button[type="submit"] {
+            display: block;
+            margin: 20px auto;
+            padding: 5px;
+            font-size: 16px;
+            border-radius: 10px;
+            background-color: #000000;
+            color: white;
+            cursor: pointer;
+            border: 1px solid #000000;
+        }
+        @media (max-width: 600px) {
+            .form-group.half-width {
+                flex: 0 0 48%;
+            }
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Inspection Report</h1>
+    <form id="inspectionForm">
+        <!-- Name and Date Fields Side-by-Side -->
+        <div class="form-row">
+            <div class="form-group half-width">
+                <label for="nameInput">Name:</label>
+                <input type="text" id="nameInput" placeholder="Type to search...">
+                <div id="nameSuggestions" class="suggestions"></div>
+                <input type="text" id="otherName" name="otherName" style="display:none;" placeholder="Enter name">
+            </div>
+            <div class="form-group half-width">
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" value="">
+            </div>
+        </div>
+
+        <!-- Supplier Name Dropdown -->
+        <div class="form-group">
+            <label for="supplierInput">Supplier Name:</label>
+            <input type="text" id="supplierInput" placeholder="Type to search...">
+            <div id="supplierSuggestions" class="suggestions"></div>
+            <input type="text" id="otherSupplier" name="otherSupplier" style="display:none;" placeholder="Enter supplier name">
+        </div>
+
+        <!-- Bill No. and Quantity Fields Side-by-Side -->
+        <div class="form-row">
+            <div class="form-group half-width">
+                <label for="billNo">Bill No.:</label>
+                <input type="text" id="billNo" name="billNo" placeholder="Enter bill number">
+            </div>
+            <div class="form-group half-width">
+                <label for="quantity">Quantity:</label>
+                <input type="text" id="quantity" name="quantity" placeholder="Enter quantity">
+            </div>
+        </div>
+
+        <!-- Quality Check Fields (Generated based on selected product) -->
+        <div class="form-group">
+            <label for="productInput">Select Product:</label>
+            <input type="text" id="productInput" placeholder="Type to search..." oninput="handleProductInput()">
+            <div id="productSuggestions" class="suggestions"></div>
+            <input type="text" id="otherProduct" name="otherProduct" style="display:none;" placeholder="Enter product name">
+        </div>
+
+        <!-- Item Code Dropdown -->
+        <div class="form-group">
+            <label for="itemCodeInput">Item Code:</label>
+            <input type="text" id="itemCodeInput" placeholder="Type to search...">
+            <div id="itemCodeSuggestions" class="suggestions"></div>
+        </div>
+        
+        <div id="fieldsContainer"></div>
+        
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        let productData = {};
+
+        // Fetch product data from JSON file
+        async function fetchProductData() {
+            const response = await fetch('C:\Users\Admin\Desktop.qaFields.txt'); // Update with actual path to your JSON file
+            productData = await response.json();
+        }
+
+        // Options for each dropdown
+        const nameOptions = ["Name 1", "Name 2", "Other"];
+        const supplierOptions = ["Supplier 1", "Supplier 2", "Other"];
+        const productOptions = ["Product 1", "Product 2", "Product 3", "Other"];
+        const itemCodeOptions = ["P001", "P002", "P003"];
+
+        // Set default date to current date
+        document.getElementById('date').value = new Date().toISOString().split('T')[0];
+
+        // Function to handle 'other' option selection
+        function handleOtherField(option, inputField) {
+            if (option === 'Other') {
+                document.getElementById(inputField).style.display = 'block';
+            } else {
+                document.getElementById(inputField).style.display = 'none';
+                document.getElementById(inputField).value = '';
+            }
+        }
+
+        // Function to filter and show suggestions
+        function showSuggestions(inputElement, suggestionsElement, options) {
+            const filter = inputElement.value.toLowerCase().trim();
+            const suggestions = options.filter(option => option.toLowerCase().includes(filter));
+            suggestionsElement.innerHTML = suggestions.map(option => `<div class="suggestion-item" onclick="selectSuggestion('${option}', '${inputElement.id}', '${suggestionsElement.id}')">${option}</div>`).join('');
+            suggestionsElement.style.display = suggestions.length ? 'block' : 'none';
+        }
+
+        // Function to select a suggestion
+        function selectSuggestion(option, inputId, suggestionsId) {
+            document.getElementById(inputId).value = option;
+            document.getElementById(suggestionsId).style.display = 'none';
+            handleOtherField(option, inputId.replace('Input', ''));
+
+            // If selecting a product, update the item code
+            if (inputId === 'productInput') {
+                const product = productData.products.find(p => p.name === option);
+                if (product) {
+                    document.getElementById('itemCodeInput').value = product.code;
+                } else {
+                    document.getElementById('itemCodeInput').value = '';
+                }
+                generateFields(option);
+            }
+        }
+
+        // Function to handle product input
+        function handleProductInput() {
+            const productInput = document.getElementById('productInput');
+            const productSuggestions = document.getElementById('productSuggestions');
+            showSuggestions(productInput, productSuggestions, productOptions);
+        }
+
+        // Function to generate fields based on selected product
+        function generateFields(selectedProduct) {
+            const fieldsContainer = document.getElementById('fieldsContainer');
+
+            // Clear previous fields
+            fieldsContainer.innerHTML = '';
+
+            // Get product fields
+            const product = productData.products.find(p => p.name === selectedProduct);
+            if (product) {
+                product.fields.forEach(field => {
+                    const div = document.createElement('div');
+                    div.className = 'form-group';
+
+                    const label = document.createElement('label');
+                    label.textContent = field.label;
+                    label.htmlFor = field.name;
+
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.name = field.name;
+                    input.id = field.name;
+
+                    div.appendChild(label);
+                    div.appendChild(input);
+                    fieldsContainer.appendChild(div);
+                });
+            }
+        }
+
+        // Add event listeners
+        document.getElementById('nameInput').addEventListener('input', () => {
+            showSuggestions(document.getElementById('nameInput'), document.getElementById('nameSuggestions'), nameOptions);
+        });
+
+        document.getElementById('supplierInput').addEventListener('input', () => {
+            showSuggestions(document.getElementById('supplierInput'), document.getElementById('supplierSuggestions'), supplierOptions);
+        });
+
+        document.getElementById('productInput').addEventListener('input', () => {
+            handleProductInput();
+        });
+
+        document.getElementById('itemCodeInput').addEventListener('input', () => {
+            showSuggestions(document.getElementById('itemCodeInput'), document.getElementById('itemCodeSuggestions'), itemCodeOptions);
+        });
+
+        // Hide all suggestions when clicking outside
+        document.addEventListener('click', function (event) {
+            const suggestions = document.querySelectorAll('.suggestions');
+            suggestions.forEach(suggestion => {
+                suggestion.style.display = 'none';
+            });
+        });
+
+        // Prevent event propagation when clicking inside the input or suggestions
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('click', function (event) {
+                event.stopPropagation();
+            });
+        });
+
+        const suggestionContainers = document.querySelectorAll('.suggestions');
+        suggestionContainers.forEach(container => {
+            container.addEventListener('click', function (event) {
+                event.stopPropagation();
+            });
+        });
+
+        // Fetch product data on page load
+        fetchProductData();
+    </script>
+</body>
+</html>

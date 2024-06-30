@@ -103,7 +103,7 @@
         <div class="form-row">
             <div class="form-group half-width">
                 <label for="nameInput">Name:</label>
-                <input type="text" id="nameInput" placeholder="Type to search...">
+                <input type="text" id="nameInput"  placeholder="Type to search..."  required>
                 <div id="nameSuggestions" class="suggestions"></div>
                 <input type="text" id="otherName" name="otherName" style="display:none;" placeholder="Enter name">
             </div>
@@ -116,7 +116,7 @@
         <!-- Supplier Name Dropdown -->
         <div class="form-group">
             <label for="supplierInput">Supplier Name:</label>
-            <input type="text" id="supplierInput" placeholder="Type to search...">
+            <input type="text" id="supplierInput" placeholder="Type to search..." required >
             <div id="supplierSuggestions" class="suggestions"></div>
             <input type="text" id="otherSupplier" name="otherSupplier" style="display:none;" placeholder="Enter supplier name">
         </div>
@@ -125,18 +125,18 @@
         <div class="form-row">
             <div class="form-group half-width">
                 <label for="billNo">Bill No.:</label>
-                <input type="text" id="billNo" name="billNo" placeholder="Enter bill number">
+                <input type="text" id="billNo" name="billNo" placeholder="Enter bill number" required >
             </div>
             <div class="form-group half-width">
                 <label for="quantity">Quantity:</label>
-                <input type="text" id="quantity" name="quantity" placeholder="Enter quantity">
+                <input type="text" id="quantity" name="quantity" placeholder="Enter quantity" required >
             </div>
         </div>
 
         <!-- Quality Check Fields (Generated based on selected product or standard criteria) -->
         <div class="form-group">
             <label for="productInput">Select Product:</label>
-            <input type="text" id="productInput" placeholder="Type to search...">
+            <input type="text" id="productInput" placeholder="Type to search... " required>
             <div id="productSuggestions" class="suggestions"></div>
             <input type="text" id="otherProduct" name="otherProduct" style="display:none;" placeholder="Enter product name">
         </div>
@@ -144,7 +144,7 @@
         <!-- Item Code Dropdown -->
         <div class="form-group">
             <label for="itemCodeInput">Item Code:</label>
-            <input type="text" id="itemCodeInput" placeholder="Type to search...">
+            <input type="text" id="itemCodeInput" placeholder="Type to search..." required >
             <div id="itemCodeSuggestions" class="suggestions"></div>
         </div>
 

@@ -362,13 +362,13 @@
             });
 
             // Prepare data to send
-            //const dataToSend = JSON.stringify(formData);
+            const dataToSend = JSON.stringify(formData);
             console.log('Data Object:',dataToSend);
            
                 fetch('https://script.google.com/macros/s/AKfycbyZJMyEFxseUp6nsZf4ZFwqxMpmsgVGZOK3L3FFewBGOdLA2p6Wxd2eqRtXiq42XksX/exec', {
                     redirect:"follow",
                     method: 'POST',
-                    body: JSON.stringify(formData),
+                    body: dataSend,
                     headers: {
                         'Content-Type': 'text/plain;charset=utf-8',
                     },

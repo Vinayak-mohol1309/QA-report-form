@@ -282,7 +282,6 @@
                 for (let i = 0; i < 3; i++) { // Generate three input fields per label
                     const input = document.createElement('input');
                     input.type = 'text';
-                  //  input.placeholder = 'Enter ' + field.label.toLowerCase() + ' ' + (i + 1);
                     input.name = field.name + (i + 1); // Unique name for each input
                     checkRow.appendChild(input);
                 }
@@ -324,6 +323,11 @@
 
         document.getElementById('productInput').addEventListener('input', () => {
             showSuggestions(document.getElementById('productInput'), document.getElementById('productSuggestions'), productOptions);
+            updateItemCodeAndQualityChecks();
+        });
+
+        // Update item code and quality checks based on selected product
+        function updateItemCodeAndQualityChecks() {
             const productName = document.getElementById('productInput').value;
             const product = productData.products.find(p => p.name === productName);
             if (product) {
@@ -333,7 +337,9 @@
                 document.getElementById('itemCodeInput').value = '';
                 generateStandardQualityChecks();
             }
-        });
+        }
+
+        document.getElementById('itemCodeInput').addEventListener('input', handleItemCodeInput);
 
         // Handle form submission
         function submitForm(event) {

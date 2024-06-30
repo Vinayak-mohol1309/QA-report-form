@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -84,9 +82,9 @@
         }
         .quality-checks .check-row input {
             width: calc(33.33% - 10px);
-             border: 1px solid #000000;
-             border-radius:10px;
-             padding: 4px;
+            border: 1px solid #000000;
+            border-radius:10px;
+            padding: 4px;
         }
         @media (max-width: 600px) {
             .quality-checks .check-row input {
@@ -100,7 +98,7 @@
 </head>
 <body>
     <h1>Inspection Report</h1>
-    <form id="inspectionForm">
+    <form id="inspectionForm" onsubmit="return submitForm(event)">
         <!-- Name and Date Fields Side-by-Side -->
         <div class="form-row">
             <div class="form-group half-width">
@@ -222,25 +220,25 @@
             const filter = inputElement.value.toLowerCase().trim();
             const suggestions = options.filter(option => option.toLowerCase().includes(filter));
             suggestionsElement.innerHTML = suggestions.map(option => `<div class="suggestion-item" onclick="selectSuggestion('${option}', '${inputElement.id}', '${suggestionsElement.id}')">${option}</div>`).join('');
-            suggestionsElement.style.display = suggestions.length ? 'block' : 'none';
+            suggestionsElement.style.display = suggestions.length > 0 ? 'block' : 'none';
         }
 
-        // Function to select a suggestion
+        // Function to handle suggestion selection
         function selectSuggestion(option, inputId, suggestionsId) {
             document.getElementById(inputId).value = option;
             document.getElementById(suggestionsId).style.display = 'none';
-            handleOtherField(option, inputId.replace('Input', ''));
-            
-            // If selecting a product, update the item code and quality check fields
-            if (inputId === 'productInput') {
-                const product = productData.products.find(p => p.name === option);
-                if (product) {
-                    document.getElementById('itemCodeInput').value = product.code;
-                    generateQualityChecks(product.fields);
-                } else {
-                    document.getElementById('itemCodeInput').value = '';
-                    generateStandardQualityChecks();
-                }
+            handleOtherField(option, `other${inputId.charAt(0).toUpperCase() + inputId.slice(1, -5)}`);
+        }
+
+        // Function to handle item code input
+        function handleItemCodeInput() {
+            const itemCodeInput = document.getElementById('itemCodeInput');
+            const productName = document.getElementById('productInput').value;
+            const product = productData.products.find(p => p.code === itemCodeInput.value && p.name === productName);
+            if (product) {
+                generateQualityChecks(product.fields);
+            } else {
+                generateStandardQualityChecks();
             }
         }
 
@@ -284,7 +282,7 @@
                 for (let i = 0; i < 3; i++) { // Generate three input fields per label
                     const input = document.createElement('input');
                     input.type = 'text';
-                    input.placeholder = 'Enter ' + field.label.toLowerCase() + ' ' + (i + 1);
+                  //  input.placeholder = 'Enter ' + field.label.toLowerCase() + ' ' + (i + 1);
                     input.name = field.name + (i + 1); // Unique name for each input
                     checkRow.appendChild(input);
                 }
@@ -325,14 +323,67 @@
         });
 
         document.getElementById('productInput').addEventListener('input', () => {
+            showSuggestions(document.getElementById('productInput'), document.getElementById('productSuggestions'), productOptions);
             const productName = document.getElementById('productInput').value;
             const product = productData.products.find(p => p.name === productName);
             if (product) {
-                selectSuggestion(productName, 'productInput', 'productSuggestions');
+                document.getElementById('itemCodeInput').value = product.code;
+                generateQualityChecks(product.fields);
             } else {
+                document.getElementById('itemCodeInput').value = '';
                 generateStandardQualityChecks();
             }
         });
+
+        // Handle form submission
+        async function submitForm(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Gather form data
+            const formData = {
+                name: document.getElementById('nameInput').value,
+                date: document.getElementById('date').value,
+                supplierName: document.getElementById('supplierInput').value,
+                billNo: document.getElementById('billNo').value,
+                quantity: document.getElementById('quantity').value,
+                productName: document.getElementById('productInput').value,
+                itemCode: document.getElementById('itemCodeInput').value,
+                qualityChecks: {}
+            };
+
+            // Collect all quality check values
+            const qualityChecksContainer = document.getElementById('qualityChecksContainer');
+            const checkRows = qualityChecksContainer.querySelectorAll('.check-row');
+            checkRows.forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                inputs.forEach(input => {
+                    formData.qualityChecks[input.name] = input.value;
+                });
+            });
+
+            // Prepare data to send
+            const dataToSend = JSON.stringify(formData);
+
+            try {
+                const response = await fetch('https://script.google.com/macros/s/AKfycbyZJMyEFxseUp6nsZf4ZFwqxMpmsgVGZOK3L3FFewBGOdLA2p6Wxd2eqRtXiq42XksX/exec', {
+                    redirect:"follow",
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8',
+                    },
+                    body: dataToSend
+                });
+
+                if (response.ok) {
+                    alert('Form submitted successfully!');
+                } else {
+                    alert('Failed to submit form.');
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                alert('An error occurred while submitting the form.');
+            }
+        }
     </script>
 </body>
 </html>

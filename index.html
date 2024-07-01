@@ -98,7 +98,7 @@
 </head>
 <body>
     <h1>Inspection Report</h1>
-    <form id="inspectionForm" onsubmit="return submitForm(event)">
+    <form id="inspectionForm" onsubmit="submitForm(event)">
         <!-- Name and Date Fields Side-by-Side -->
         <div class="form-row">
             <div class="form-group half-width">
@@ -348,7 +348,11 @@
         // Handle form submission
         function submitForm(event) {
             event.preventDefault(); // Prevent default form submission
-
+            // no internet connection alert
+              if (!navigator.onLine) {
+        alert('No internet connection.');
+        return;
+    }
             // Gather form data
             const formData = {
                 name: document.getElementById('nameInput').value,
@@ -404,6 +408,14 @@
             console.error('Error:', error);
         });
 };
+         document.addEventListener('focusin', (event) => {
+            const target = event.target;
+            if (target.tagName === 'INPUT' || target.tagName === 'SELECT') {
+                setTimeout(() => {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
+            }
+        });
     </script>
 </body>
 </html>

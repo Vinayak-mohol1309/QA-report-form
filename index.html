@@ -374,8 +374,8 @@
             // Prepare data to send
             // const dataToSend = JSON.stringify(formData);
              console.log(formData);
-           
-                fetch('https://script.google.com/macros/s/AKfycbyZJMyEFxseUp6nsZf4ZFwqxMpmsgVGZOK3L3FFewBGOdLA2p6Wxd2eqRtXiq42XksX/exec', {
+             var url = 'https://script.google.com/macros/s/AKfycbyZJMyEFxseUp6nsZf4ZFwqxMpmsgVGZOK3L3FFewBGOdLA2p6Wxd2eqRtXiq42XksX/exec';
+                fetch(url, {
                     redirect:"follow",
                     method: 'POST',
                     body: JSON.stringify(formData),

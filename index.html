@@ -157,6 +157,13 @@
     </form>
 
     <script>
+    function generateReferenceNumber() {
+    const prefix = 'SSQC';
+    const randomNumber = Math.floor(Math.random() * 1000000); // Generates a random number between 0 and 999999
+    const referenceNumber = prefix + randomNumber;
+    return referenceNumber;
+    }
+    var referenceNumber = generateReferenceNumber();
         const productData = {
             "products": [
                 {
@@ -355,6 +362,7 @@
     }
             // Gather form data
             const formData = {
+                code: referenceNumber,
                 name: document.getElementById('nameInput').value,
                 date: document.getElementById('date').value,
                 supplierName: document.getElementById('supplierInput').value,
@@ -395,7 +403,7 @@
         .then(data => {
             console.log('Data:', data);
             if (data.status === 'success') {
-                alert('Form submitted successfully.');
+                alert("Form submitted successfully.\n Reference number:- "+referenceNumber );
                 document.getElementById('inspectionForm').reset();
                 document.getElementById('date').value = new Date().toISOString().split('T')[0];
                 document.getElementById('qualityChecksContainer').innerHTML = '';

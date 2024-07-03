@@ -433,7 +433,7 @@
         .then(data => {
             console.log('Data:', data);
             if (data.status === 'success') {
-                alert("Form submitted successfully.\n Reference number:- "+referenceNumber );
+                alert("Form submitted successfully.\nReference number :- "+referenceNumber );
                 document.getElementById('inspectionForm').reset();
                 document.getElementById('date').value = new Date().toISOString().split('T')[0];
                 document.getElementById('qualityChecksContainer').innerHTML = '';

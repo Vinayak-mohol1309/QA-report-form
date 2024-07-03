@@ -152,6 +152,17 @@
         <div id="qualityChecksContainer" class="quality-checks">
             <!-- Quality Check fields will be dynamically added here -->
         </div>
+
+        <!--Remark container-->
+        <div class="form-group">
+            <label for="remark">Remark:</label>
+            <input type="text" id="remark" name="remark" placeholder="Enter remarks" required>
+        </div>
+        <!--Action taken container-->
+        <div class="form-group">
+           <label for="actionTaken">Action Taken:</label>
+           <input type="text" id="actionTaken" name="actionTaken" placeholder="Enter action taken" required>
+        </div>
         
         <button type="submit">Submit</button>
     </form>
@@ -370,7 +381,9 @@
                 quantity: document.getElementById('quantity').value,
                 productName: document.getElementById('productInput').value,
                 itemCode: document.getElementById('itemCodeInput').value,
-                qualityChecks: {}
+                qualityChecks: {},
+                remark: document.getElementById('remark').value,
+                actionTaken: document.getElementById('actionTaken').value
             };
 
             // Collect all quality check values

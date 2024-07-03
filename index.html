@@ -403,15 +403,15 @@
                 actionTaken: document.getElementById('actionTaken').value
             };
 
-            // Collect all quality check values
-            const qualityChecksContainer = document.getElementById('qualityChecksContainer');
+           const qualityChecksContainer = document.getElementById('qualityChecksContainer');
             const checkRows = qualityChecksContainer.querySelectorAll('.check-row');
-            checkRows.forEach((row ,index) => {
+            checkRows.forEach(row => {
                 const inputs = row.querySelectorAll('input');
                 inputs.forEach(input => {
                     formData.qualityChecks[input.name] = input.value;
                 });
             });
+            
 
             // Prepare data to send
             // const dataToSend = JSON.stringify(formData);

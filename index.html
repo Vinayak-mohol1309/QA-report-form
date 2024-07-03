@@ -398,7 +398,7 @@
                 quantity: document.getElementById('quantity').value,
                 productName: document.getElementById('productInput').value,
                 itemCode: document.getElementById('itemCodeInput').value,
-                qualityChecks: [],
+                qualityChecks: {},
                 remark: document.getElementById('remark').value,
                 actionTaken: document.getElementById('actionTaken').value
             };
@@ -406,7 +406,7 @@
             // Collect all quality check values
             const qualityChecksContainer = document.getElementById('qualityChecksContainer');
             const checkRows = qualityChecksContainer.querySelectorAll('.check-row');
-            checkRows.forEach(row => {
+            checkRows.forEach((row ,index) => {
                 const inputs = row.querySelectorAll('input');
                 inputs.forEach(input => {
                     formData.qualityChecks[input.name] = input.value;

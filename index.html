@@ -170,13 +170,27 @@
         <button type="submit">Submit</button>
     </form>
 
-    <script>
+<script>
+    // fuction to generate reference code    
     function generateReferenceNumber() {
     const prefix = 'SSQC';
-    const randomNumber = Math.floor(Math.random() * 1000000); // Generates a random number between 0 and 999999
-    const referenceNumber = prefix + randomNumber;
+    // Get the current date and time
+    const now = new Date();
+    // Extract date parts
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-based in JavaScript
+    const year = String(now.getFullYear()).slice(-2); // Get last two digits of the year
+    // Extract time parts
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    // Form the date and time parts
+    const datePart = `${day}${month}${year}`;
+    const timePart = `${hours}${minutes}${seconds}`;
+    const referenceNumber = `${prefix}-${datePart}/${timePart}`;// Form the reference number
     return referenceNumber;
-    }
+}
+    console.log(generateReferenceNumber());
     var referenceNumber = generateReferenceNumber();
         const productData = {
             "products": [

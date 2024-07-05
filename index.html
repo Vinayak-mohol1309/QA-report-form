@@ -124,17 +124,24 @@
             <input type="text" id="otherSupplier" name="otherSupplier" style="display:none;" placeholder="Enter supplier name">
         </div>
 
-        <!-- Bill No. and Quantity Fields Side-by-Side -->
-        <div class="form-row">
-            <div class="form-group half-width">
+       <!--Bill No.-->
+        <div class="form-group">
                 <label for="billNo">Bill No.:</label>
                 <input type="text" id="billNo" name="billNo" placeholder="Enter bill number" required >
             </div>
+            
+        <!--Quantity Fields Side-by-Side -->
+        <div class="form-row">
             <div class="form-group half-width">
-                <label for="quantity">Quantity:</label>
-                <input type="text" id="quantity" name="quantity" placeholder="Enter quantity" required >
+                <label for="Quantity as per invoice">Invoice Quantity:</label>
+                <input type="text" id="invoiceQuantity" name="invoiceQuantity" placeholder="Enter invoice Quantity" required >
             </div>
-        </div>
+        
+            <div class="form-group half-width">
+              <label for="ActualQuantity">Actual Quantity:</label>
+              <input type="text" id="actualQuantity" name="actualQuantity" placeholder="Enter actual Quantity" required >
+            </div>
+      </div>
 
         <!-- Quality Check Fields (Generated based on selected product or standard criteria) -->
         <div class="form-group">
